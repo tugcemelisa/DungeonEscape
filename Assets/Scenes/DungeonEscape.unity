@@ -587,8 +587,8 @@ GameObject:
   - component: {fileID: 1390187238}
   - component: {fileID: 1390187237}
   m_Layer: 0
-  m_Name: Gold2
-  m_TagString: Gold
+  m_Name: Gem2
+  m_TagString: Gem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -847,16 +847,103 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4031188539548284239, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102310082}
     - targetCorrespondingSourceObject: {fileID: 2224016346495872566, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1998339834}
+    - targetCorrespondingSourceObject: {fileID: -2059814784647300155, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102310081}
     - targetCorrespondingSourceObject: {fileID: -7719914744358358892, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
       insertIndex: -1
       addedObject: {fileID: 652484242}
+    - targetCorrespondingSourceObject: {fileID: 144671602729947579, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102310080}
     - targetCorrespondingSourceObject: {fileID: -1855264376996825935, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1511556715}
   m_SourcePrefab: {fileID: 100100000, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+--- !u!1 &2102310077 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 144671602729947579, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+  m_PrefabInstance: {fileID: 2102310076}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2102310078 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2059814784647300155, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+  m_PrefabInstance: {fileID: 2102310076}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2102310079 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4031188539548284239, guid: 33592840f3d1e664cacbf0eec31c0f70, type: 3}
+  m_PrefabInstance: {fileID: 2102310076}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2102310080
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102310077}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.6743393, y: 0.09758733, z: 4.591332}
+  m_Center: {x: 0.0012968779, y: -0.026331894, z: 0}
+--- !u!65 &2102310081
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102310078}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.6743393, y: 0.09758733, z: 4.591332}
+  m_Center: {x: 0.0012949705, y: -0.026332133, z: 0}
+--- !u!65 &2102310082
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102310079}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.6743393, y: 0.09758733, z: 4.591332}
+  m_Center: {x: 0.0012947321, y: -0.026331894, z: 0}
 --- !u!33 &244890464838508290
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -914,8 +1001,8 @@ GameObject:
   - component: {fileID: 6835046495372208589}
   - component: {fileID: 8736422367286304008}
   m_Layer: 0
-  m_Name: Gold
-  m_TagString: Gold
+  m_Name: Gem1
+  m_TagString: Gem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

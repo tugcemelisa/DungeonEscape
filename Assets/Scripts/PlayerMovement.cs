@@ -1,48 +1,55 @@
 using UnityEngine;
+using TMPro; // Required for the next lesson (UI)
 
 public class PlayerMovement : MonoBehaviour
 {
-    //1. DEĞİŞKENLER (Karakter Özellikleri) 
-    [Header("Hareket Ayarları")]
-    public float speed = 5.0f;     // Yürüme hızı
-    public float jumpForce = 5.0f;  // Zıplama gücü
+    // --- 1. VARIABLES (Player Attributes) ---
+    [Header("Movement Settings")]
+    public float speed = 5.0f;
+    public float jumpForce = 5.0f;
 
-    [Header("Oyun Verileri")]
-    public int score = 0;          // Toplanan altın sayısı
+    [Header("Game Data")]
+    public int score = 0;
 
-    private Rigidbody rb;          // Fizik motoru referansı
+    private Rigidbody rb;
 
-    //2. HAZIRLIK (Oyun Başladığında) 
+    // --- 2. INITIALIZATION ---
     void Start()
     {
-        rb = GetComponent<Rigidbody>(); // Fizik motorunu bağla
+        rb = GetComponent<Rigidbody>();
     }
 
-    //3. DÖNGÜ (Her Karede Kontrol Et) 
+    // --- 3. LOOP ---
     void Update()
     {
+        // Sprint System
+        float currentSpeed = speed;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed = speed * 2;
+        }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-   
 
-        transform.Translate(x * speed * Time.deltaTime, 0, z * speed * Time.deltaTime);
+        transform.Translate(x * currentSpeed * Time.deltaTime, 0, z * currentSpeed * Time.deltaTime);
 
+        // Jumping
         if (Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    //4. ETKİLEŞİM (Temas Anında)
+    // --- 4. INTERACTION ---
     private void OnTriggerEnter(Collider other)
     {
-        // Eğer çarptığımız objenin yakasında "Gold" etiketi varsa
-        if (other.gameObject.CompareTag("Gold"))
+        // IMPORTANT: We changed the tag from "Gold" to "Gem"
+        if (other.gameObject.CompareTag("Gem"))
         {
-            score += 10; // Skor kutusuna 10 ekle
-            Debug.Log("Altın Toplandı! Mevcut Skor: " + score);
+            score += 10;
+            Debug.Log("Gem Collected! Current Score: " + score);
 
-            // Altını dünyadan sil (Artık karakterin çantasında)
             Destroy(other.gameObject);
         }
     }
