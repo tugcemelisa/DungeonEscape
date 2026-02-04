@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5bb216a1f946be84fbcabe4a747da0ec
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 224313
+  packageName: Low Poly Dungeon Lite - Fantasy Modular Kit
+  packageVersion: 1.0.0
+  assetPath: Assets/Red Nebula Studios/RNLowPolyDungeonLite/Scenes/Demo Scripts/ActivateProp.cs
+  uploadId: 505168
