@@ -1,9 +1,12 @@
 using UnityEngine;
-using TMPro; // Required for the next lesson (UI)
+using TMPro; // KRİTİK: Bu satır, kodun TextMeshPro ile konuşmasını sağlar
 
 public class PlayerMovement : MonoBehaviour
 {
-    // --- 1. VARIABLES (Player Attributes) ---
+    // --- 1. REFERENCES ---
+    [Header("UI Settings")]
+    public TextMeshProUGUI gemText; // Ekrandaki yazı objesini buraya bağlayacağız
+
     [Header("Movement Settings")]
     public float speed = 5.0f;
     public float jumpForce = 5.0f;
@@ -17,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        UpdateUI(); // Oyun başlar başlamaz ekranı güncelle
     }
 
     // --- 3. LOOP ---
@@ -44,13 +48,19 @@ public class PlayerMovement : MonoBehaviour
     // --- 4. INTERACTION ---
     private void OnTriggerEnter(Collider other)
     {
-        // IMPORTANT: We changed the tag from "Gold" to "Gem"
         if (other.gameObject.CompareTag("Gem"))
         {
             score += 10;
+            UpdateUI(); // Mücevher toplandığında yazıyı güncelle
             Debug.Log("Gem Collected! Current Score: " + score);
-
             Destroy(other.gameObject);
         }
+    }
+
+    // --- 5. UI UPDATE METHOD ---
+    void UpdateUI()
+    {
+        // Ekrandaki yazıya "Gems: 10" gibi değerleri gönderir
+        gemText.text = "Gems: " + score;
     }
 }
