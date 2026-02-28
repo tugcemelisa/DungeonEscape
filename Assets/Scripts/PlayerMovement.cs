@@ -35,12 +35,19 @@ public class PlayerMovement : MonoBehaviour
     // --- COLLISION LOGIC ---
     private void OnTriggerEnter(Collider other)
     {
-        // Detect if the object we touched is a Gem
+        // Check if we touched a Gem
         if (other.gameObject.CompareTag("Gem"))
         {
-            score += 10;        // Add points
-            UpdateUI();         // Refresh the text on the screen
-            Destroy(other.gameObject); // Remove gem from the world
+            // Get the specific GemData component from the gem
+            GemData data = other.GetComponent<GemData>();
+
+            if (data != null)
+            {
+                score += data.gemValue; // Add unique points based on color
+                UpdateUI(); // Update our Bangers font text
+            }
+
+            Destroy(other.gameObject);
         }
     }
 
