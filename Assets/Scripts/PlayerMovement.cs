@@ -1,61 +1,79 @@
 using UnityEngine;
-using TMPro; // 1. STEP: Necessary to access UI components
+using TMPro;
+using UnityEngine.SceneManagement; // Required to restart the level
 
 public class PlayerMovement : MonoBehaviour
 {
-    // --- UI REFERENCES ---
     [Header("UI Settings")]
-    public TextMeshProUGUI gemText; // Slot for our GemCounter object
+    public TextMeshProUGUI gemText;
+    public TextMeshProUGUI healthText;
 
-    // --- MOVEMENT SETTINGS ---
+    [Header("Player Stats")]
+    public int score = 0;
+    public int health = 100; // Starting health value
+
     [Header("Movement Settings")]
     public float speed = 5.0f;
     public float jumpForce = 5.0f;
 
-    // --- PLAYER DATA ---
-    [Header("Player Data")]
-    public int score = 0;
-
     private Rigidbody rb;
 
-    // --- INITIALIZATION ---
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        // Ensure the screen displays "Gems: 0" at the start
         UpdateUI();
     }
 
     void Update()
     {
         HandleMovement();
-    }
 
-    // --- COLLISION LOGIC ---
-    private void OnTriggerEnter(Collider other)
-    {
-        // Check if we touched a Gem
-        if (other.gameObject.CompareTag("Gem"))
+        // Check if player is dead
+        if (health <= 0)
         {
-            // Get the specific GemData component from the gem
-            GemData data = other.GetComponent<GemData>();
-
-            if (data != null)
-            {
-                score += data.gemValue; // Add unique points based on color
-                UpdateUI(); // Update our Bangers font text
-            }
-
-            Destroy(other.gameObject);
+            RestartGame();
         }
     }
 
-    // --- UI HELPER METHOD ---
+    private void OnTriggerEnter(Collider other)
+    {
+        // Handle Gem Collection (Multi-colored)
+        if (other.gameObject.CompareTag("Gem"))
+        {
+            GemData data = other.GetComponent<GemData>();
+            if (data != null)
+            {
+                score += data.gemValue;
+                UpdateUI();
+            }
+            Destroy(other.gameObject);
+        }
+
+        // Handle Enemy Collision (Damage)
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(20); // Lose 20 HP when touching enemy
+        }
+    }
+
+    // Helper method to reduce health
+    void TakeDamage(int amount)
+    {
+        health -= amount;
+        UpdateUI();
+        Debug.Log("Ouch! Health left: " + health);
+    }
+
     void UpdateUI()
     {
-        // Format the message for the player (Visualizing the data)
         gemText.text = "Gems: " + score;
+        healthText.text = "HP: " + health;
+    }
+
+    void RestartGame()
+    {
+        // Reload the current active scene from the beginning
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void HandleMovement()
@@ -63,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * 2 : speed;
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-
         transform.Translate(x * currentSpeed * Time.deltaTime, 0, z * currentSpeed * Time.deltaTime);
 
         if (Input.GetKeyDown(KeyCode.Space))
