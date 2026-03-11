@@ -8,6 +8,9 @@ TagManager:
   - Gem
   - Mario
   - Enemy
+  - Money
+  - IronDoor
+  - Key
   layers:
   - Default
   - TransparentFX
