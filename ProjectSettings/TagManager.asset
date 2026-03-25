@@ -11,6 +11,8 @@ TagManager:
   - Money
   - IronDoor
   - Key
+  - Window
+  - Water
   layers:
   - Default
   - TransparentFX
