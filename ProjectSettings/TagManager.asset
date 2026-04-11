@@ -13,6 +13,8 @@ TagManager:
   - Key
   - Window
   - Water
+  - Book
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Ground
   - 
   - 
   - 

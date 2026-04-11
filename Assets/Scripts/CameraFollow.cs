@@ -6,26 +6,45 @@ public class CameraFollow : MonoBehaviour
     public float smoothSpeed = 0.125f;
     public float rotationSpeed = 3.0f;
 
-    private Vector3 offset;
+    [Header("Camera Offset Settings")]
+    public float distance = 0.83f;
+    public float height = 0.33f;
+
     private float currentX = 0f;
     private float currentY = 0f;
 
     void Start()
     {
-        offset = transform.position - player.position;
-        Cursor.lockState = CursorLockMode.Locked; // Fareyi ekrana kilitle
+        Cursor.lockState = CursorLockMode.Locked;
+
+        Vector3 angles = transform.eulerAngles;
+        currentX = angles.y;
+        currentY = angles.x;
     }
 
+    // Fiziksel titremeyi önlemek için FixedUpdate sonrası en stabil yer burasıdır
     void LateUpdate()
     {
+        if (player == null) return;
+
+        // 1. Mouse Inputs
         currentX += Input.GetAxis("Mouse X") * rotationSpeed;
         currentY -= Input.GetAxis("Mouse Y") * rotationSpeed;
-        currentY = Mathf.Clamp(currentY, -20f, 60f); // Takla atmayı engelle
+        currentY = Mathf.Clamp(currentY, -40f, 85f);
 
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
-        Vector3 desiredPosition = player.position + (rotation * offset);
 
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        transform.LookAt(player.position);
+        // 2. Target Position Calculation
+        Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+        // Karakterin tam pozisyonu + rotasyonlu mesafe + yükseklik
+        Vector3 targetPosition = (rotation * negDistance) + player.position + Vector3.up * height;
+
+        // 3. Smooth Following
+        // Titreme varsa smoothSpeed değerini 1f yaparak test et, eğer titreme kesilirse 
+        // smoothSpeed'i yavaş yavaş düşürerek en yumuşak halini bul (0.125f - 0.5f arası).
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
+
+        // 4. Always look at the player's head area
+        transform.LookAt(player.position + Vector3.up * height);
     }
 }
