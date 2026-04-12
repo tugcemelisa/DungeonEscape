@@ -3936,6 +3936,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mouse
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4139594198ca1d542a69d1bc6c7ac95b, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

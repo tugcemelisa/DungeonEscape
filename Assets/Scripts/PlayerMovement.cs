@@ -20,28 +20,35 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 5.0f;
-    public float jumpForce = 6.0f;
+    public float jumpForce = 12.0f; // Jerry'nin kütlesine göre 12 idealdir
     private Rigidbody rb;
-    private Animator anim; // Animasyonları tetiklemek için
+    private Animator anim;
 
-    [Header("Ground Check (New!)")]
-    public Transform groundCheck;    // Karakterin altına koyacağımız boş obje
-    public float groundDistance = 0.3f; // Yere ne kadar yakın olmalı?
-    public LayerMask groundMask;      // Hangi katmanı 'yer' olarak görecek?
-    private bool isGrounded;         // Yerde miyiz?
+    [Header("Ground Check (Physics Detection)")]
+    public Transform groundCheck;
+    public float groundDistance = 0.5f; // Merdivenler için 0.5 daha güvenlidir
+    public LayerMask groundMask;
+    private bool isGrounded;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        anim = GetComponentInChildren<Animator>(); // Jerry üzerindeki Animator'ü bulur
+        // Jerry'nin altındaki Animator'ü bulur
+        anim = GetComponentInChildren<Animator>();
         UpdateUI();
         ShowInfo("Explore the dungeon and find the exit!");
     }
 
     void Update()
     {
-        // YER KONTROLÜ: Her karede yere değip değmediğimizi kontrol eder
+        // YER KONTROLÜ: Radar sistemi
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        // Send isGrounded to Animator (optional parameter used for transitions)
+        if (anim != null)
+        {
+            anim.SetBool("isGrounded", isGrounded);
+        }
 
         HandleMovement();
         if (health <= 0) RestartGame();
@@ -63,9 +70,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveDirection = (camForward * z) + (camRight * x);
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * 2 : speed;
 
-        // ANIMASYON TETIKLEME: MoveSpeed parametresini günceller
+        // 1. BLEND TREE TETIKLEME: Hız bilgisini Animator'e gönderir
         float velocity = moveDirection.magnitude * currentSpeed;
-        if (anim != null) anim.SetFloat("MoveSpeed", velocity);
+        if (anim != null)
+        {
+            anim.SetFloat("MoveSpeed", velocity);
+        }
 
         transform.Translate(moveDirection * currentSpeed * Time.deltaTime, Space.World);
 
@@ -74,16 +84,37 @@ public class PlayerMovement : MonoBehaviour
             transform.forward = moveDirection;
         }
 
-        // ZIPLAMA GÜNCELLEMESI: Sadece 'isGrounded' true ise zıplar
+        // 2. ZIPLAMA VE ANIMASYON TETIKLEME
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            // Zıplamadan önce dikey hızı sıfırlamak zıplamayı daha stabil yapar
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            // Trigger Jump animation first (animation anticipation)
+            if (anim != null)
+            {
+                anim.SetTrigger("Jump");
+            }
+
+            // Reset vertical velocity before applying jump force
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            }
+
+            // Cancel any pending invokes and apply jump physics after a short delay so animation can play anticipation
+            CancelInvoke(nameof(ApplyJumpForce));
+            Invoke(nameof(ApplyJumpForce), 0.1f);
+        }
+    }
+
+    // Apply the physical jump force after a short delay so the animation can play its anticipation.
+    void ApplyJumpForce()
+    {
+        if (rb != null)
+        {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    // --- TETIKLEYICILER VE DIGERLERI (AYNEN KALDI) ---
+    // --- TETIKLEYICILER (Key, Enemy, Gem) ---
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Key") && !hasKey)
