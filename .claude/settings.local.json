@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ai-game-developer__gameobject-find",
+      "mcp__ai-game-developer__scene-save",
+      "Bash(git commit -m ' *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "ai-game-developer"
+  ]
+}
