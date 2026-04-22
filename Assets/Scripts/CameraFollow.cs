@@ -3,7 +3,8 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
-    public float smoothSpeed = 0.125f;
+    [Tooltip("Seconds to reach target position. Lower = snappier. 0.05–0.15 recommended.")]
+    public float smoothTime = 0.08f;
     public float rotationSpeed = 3.0f;
 
     [Header("Camera Offset Settings")]
@@ -12,6 +13,7 @@ public class CameraFollow : MonoBehaviour
 
     private float currentX = 0f;
     private float currentY = 0f;
+    private Vector3 camVelocity = Vector3.zero;
 
     void Start()
     {
@@ -39,10 +41,8 @@ public class CameraFollow : MonoBehaviour
         // Karakterin tam pozisyonu + rotasyonlu mesafe + yükseklik
         Vector3 targetPosition = (rotation * negDistance) + player.position + Vector3.up * height;
 
-        // 3. Smooth Following
-        // Titreme varsa smoothSpeed değerini 1f yaparak test et, eğer titreme kesilirse 
-        // smoothSpeed'i yavaş yavaş düşürerek en yumuşak halini bul (0.125f - 0.5f arası).
-        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
+        // 3. Smooth Following — SmoothDamp is frame-rate independent and velocity-aware
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref camVelocity, smoothTime);
 
         // 4. Always look at the player's head area
         transform.LookAt(player.position + Vector3.up * height);

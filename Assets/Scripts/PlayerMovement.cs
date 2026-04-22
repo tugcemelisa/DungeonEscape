@@ -22,32 +22,28 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 2.5f;
     public float jumpForce = 6.0f;
     private Rigidbody rb;
-    private Animator anim; // Animasyonları tetiklemek için
+    private Animator anim;
 
-    [Header("Ground Check (New!)")]
-    public Transform groundCheck;    // Karakterin altına koyacağımız boş obje
-    public float groundDistance = 0.3f; // Yere ne kadar yakın olmalı?
-    public LayerMask groundMask;      // Hangi katmanı 'yer' olarak görecek?
-    private bool isGrounded;         // Yerde miyiz?
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundDistance = 0.3f;
+    public LayerMask groundMask;
+    private bool isGrounded;
+
+    private Vector3 moveDirection;
+    private float currentSpeed;
+    private bool jumpRequested;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        anim = GetComponentInChildren<Animator>(); // Jerry üzerindeki Animator'ü bulur
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        anim = GetComponentInChildren<Animator>();
         UpdateUI();
         ShowInfo("Explore the dungeon and find the exit!");
     }
 
     void Update()
-    {
-        // YER KONTROLÜ: Her karede yere değip değmediğimizi kontrol eder
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        HandleMovement();
-        if (health <= 0) RestartGame();
-    }
-
-    void HandleMovement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -60,30 +56,42 @@ public class PlayerMovement : MonoBehaviour
         camForward.Normalize();
         camRight.Normalize();
 
-        Vector3 moveDirection = (camForward * z) + (camRight * x);
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * 2 : speed;
+        moveDirection = (camForward * z) + (camRight * x);
+        currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * 2 : speed;
 
-        // ANIMASYON TETIKLEME: MoveSpeed parametresini günceller
-        float velocity = moveDirection.magnitude * currentSpeed;
-        if (anim != null) anim.SetFloat("MoveSpeed", velocity);
-
-        transform.Translate(moveDirection * currentSpeed * Time.deltaTime, Space.World);
-
-        if (moveDirection != Vector3.zero)
+        // GetKeyDown must stay in Update — flag bridges to FixedUpdate
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            transform.forward = moveDirection;
+            jumpRequested = true;
+            if (anim != null) anim.SetTrigger("Jump");
         }
 
-        // ZIPLAMA GÜNCELLEMESI: Sadece 'isGrounded' true ise zıplar
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (health <= 0) RestartGame();
+    }
+
+    void FixedUpdate()
+    {
+        // Ground check synced to physics step to prevent flickering
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        // Drive blend tree at physics rate — Animator is in AnimatePhysics mode
+        if (anim != null) anim.SetFloat("MoveSpeed", moveDirection.magnitude * currentSpeed);
+
+        // MovePosition respects physics collisions and Interpolation; transform.Translate does not
+        rb.MovePosition(rb.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+
+        // Rotate via MoveRotation so rotation stays in sync with physics position updates
+        if (moveDirection != Vector3.zero)
+            rb.MoveRotation(Quaternion.LookRotation(moveDirection));
+
+        if (jumpRequested)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            if (anim != null) anim.SetTrigger("Jump");
+            jumpRequested = false;
         }
     }
 
-    // --- TETIKLEYICILER VE DIGERLERI (AYNEN KALDI) ---
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Key") && !hasKey)

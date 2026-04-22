@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ai-game-developer__scene-get-data",
+      "mcp__ai-game-developer__console-get-logs",
+      "mcp__ai-game-developer__gameobject-find",
+      "mcp__ai-game-developer__gameobject-component-get",
+      "mcp__ai-game-developer__gameobject-component-modify",
+      "mcp__ai-game-developer__scene-save",
+      "mcp__ai-game-developer__animator-modify",
+      "mcp__ai-game-developer__screenshot-scene-view",
+      "mcp__ai-game-developer__screenshot-game-view",
+      "mcp__ai-game-developer__assets-get-data",
+      "mcp__ai-game-developer__assets-find",
+      "mcp__ai-game-developer__editor-application-get-state",
+      "mcp__ai-game-developer__script-execute",
+      "mcp__ai-game-developer__assets-modify",
+      "mcp__ai-game-developer__assets-refresh",
+      "mcp__ai-game-developer__editor-application-set-state",
+      "mcp__ai-game-developer__gameobject-create"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "ai-game-developer"
+  ]
+}

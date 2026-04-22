@@ -384,7 +384,7 @@ Transform:
   m_GameObject: {fileID: 98023037}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4964245, y: 0.49452955, z: -0.5049457, w: -0.50401706}
-  m_LocalPosition: {x: 0.43436328, y: 0.033958808, z: 0.63888294}
+  m_LocalPosition: {x: 0.0068, y: 0.0321, z: 0.0557}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1148,7 +1148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 9192804736449600463}
-  smoothSpeed: 0.125
+  smoothTime: 0.08
   rotationSpeed: 3
   distance: 0.83
   height: 0.33
@@ -1801,6 +1801,7 @@ GameObject:
   - component: {fileID: 912436926}
   - component: {fileID: 912436925}
   - component: {fileID: 912436929}
+  - component: {fileID: 912436930}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -1918,6 +1919,19 @@ MonoBehaviour:
   - {fileID: 144725978}
   - {fileID: 198281244}
   speed: 2
+--- !u!114 &912436930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912436924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4534976414321d748be711652324879b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 60
 --- !u!65 &947915748
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2023,6 +2037,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.9860277, y: 1.5991769, z: 0.30644584}
   m_Center: {x: 0.00000011920929, y: 0, z: 0.0000019073486}
+--- !u!1 &1019230586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1019230587}
+  m_Layer: 0
+  m_Name: Sword_Socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1019230587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019230586}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1880242869}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1045237841
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3949,16 +3994,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 4139594198ca1d542a69d1bc6c7ac95b, type: 2}
     - target: {fileID: 5866666021909216657, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
-        'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
-        'mixamorig:RightHandRing2'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
-        'mixamorig:LeftHandThumb3'\n\tTransform 'mixamorig:RightArm'\n\tTransform
-        'mixamorig:LeftLeg'\n\tand more ...\n\tFrom animation clip 'Happy Idle'\n\tFrom
-        animation clip 'Walking'\n\tFrom animation clip 'Fast Run'\n\tFrom animation
-        clip 'Jump'"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -3970,6 +4011,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 98023038}
+    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1019230587}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5abe86a10f9c76d4aa9937018ced921f, type: 3}
 --- !u!4 &1880242868 stripped
@@ -9074,6 +9118,7 @@ GameObject:
   - component: {fileID: 9181060660092645800}
   - component: {fileID: 693615189105845495}
   - component: {fileID: 6136422283779019900}
+  - component: {fileID: 9192804736449600464}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -18887,6 +18932,26 @@ Transform:
   - {fileID: 1896791417}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9192804736449600464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2836532075830981824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 924603e368c8d53469a28f258dcc5e80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackDamage: 30
+  attackRadius: 0.65
+  attackCooldown: 0.7
+  swordPrefab: {fileID: 8449004803641222730, guid: 283dced21787f2549a3092b952a9fcfa, type: 3}
+  swordSocket: {fileID: 0}
+  swordLocalPosition: {x: 0, y: 0, z: 0}
+  swordLocalEuler: {x: 0, y: 0, z: 0}
+  swordLocalScale: {x: 0.35, y: 0.35, z: 0.35}
 --- !u!4 &9211099683981586520
 Transform:
   m_ObjectHideFlags: 0
