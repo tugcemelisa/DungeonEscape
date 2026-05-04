@@ -3,7 +3,12 @@
     "allow": [
       "mcp__ai-game-developer__gameobject-find",
       "mcp__ai-game-developer__scene-save",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(unity-mcp-cli run-tool *)",
+      "Bash(npx unity-mcp-cli *)",
+      "Bash(powershell *)",
+      "Read(//c/Users/DELL/AppData/Local/Unity/Editor/**)",
+      "Bash(grep -v \"^Binary\\\\|^\\\\s*$\")"
     ]
   },
   "enableAllProjectMcpServers": true,

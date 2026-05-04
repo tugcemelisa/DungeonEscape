@@ -3,17 +3,16 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
-    [Tooltip("Seconds to reach target position. Lower = snappier. 0.05–0.15 recommended.")]
     public float smoothTime = 0.08f;
     public float rotationSpeed = 3.0f;
 
     [Header("Camera Offset Settings")]
-    public float distance = 0.83f;
-    public float height = 0.33f;
+    public float distance = 5.0f;
+    public float height = 1.5f;
 
     private float currentX = 0f;
-    private float currentY = 0f;
-    private Vector3 camVelocity = Vector3.zero;
+    private float currentY = 20f;
+    private Vector3 _velocity = Vector3.zero;
 
     void Start()
     {
@@ -24,27 +23,21 @@ public class CameraFollow : MonoBehaviour
         currentY = angles.x;
     }
 
-    // Fiziksel titremeyi önlemek için FixedUpdate sonrası en stabil yer burasıdır
     void LateUpdate()
     {
         if (player == null) return;
 
-        // 1. Mouse Inputs
         currentX += Input.GetAxis("Mouse X") * rotationSpeed;
         currentY -= Input.GetAxis("Mouse Y") * rotationSpeed;
-        currentY = Mathf.Clamp(currentY, -40f, 85f);
+        currentY = Mathf.Clamp(currentY, -20f, 60f);
 
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
+        Vector3 targetPosition = (rotation * new Vector3(0f, 0f, -distance))
+                                 + player.position + Vector3.up * height;
 
-        // 2. Target Position Calculation
-        Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-        // Karakterin tam pozisyonu + rotasyonlu mesafe + yükseklik
-        Vector3 targetPosition = (rotation * negDistance) + player.position + Vector3.up * height;
+        transform.position = Vector3.SmoothDamp(
+            transform.position, targetPosition, ref _velocity, smoothTime);
 
-        // 3. Smooth Following — SmoothDamp is frame-rate independent and velocity-aware
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref camVelocity, smoothTime);
-
-        // 4. Always look at the player's head area
         transform.LookAt(player.position + Vector3.up * height);
     }
 }

@@ -15,6 +15,7 @@ TagManager:
   - Water
   - Book
   - Ground
+  - Gold3
   layers:
   - Default
   - TransparentFX

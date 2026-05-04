@@ -17,7 +17,11 @@
       "mcp__ai-game-developer__assets-modify",
       "mcp__ai-game-developer__assets-refresh",
       "mcp__ai-game-developer__editor-application-set-state",
-      "mcp__ai-game-developer__gameobject-create"
+      "mcp__ai-game-developer__gameobject-create",
+      "mcp__ai-game-developer__script-read",
+      "PowerShell(Get-Content *)",
+      "mcp__ai-game-developer__script-update-or-create",
+      "mcp__ai-game-developer__gameobject-destroy"
     ]
   },
   "enableAllProjectMcpServers": true,
