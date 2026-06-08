@@ -190,6 +190,11 @@ public class PlayerMovement : MonoBehaviour
 
                 heldKey = null;
                 hasKey = false;
+
+                // Level exit door kontrolü
+                var ld = collision.gameObject.GetComponent<LevelDoor>();
+                if (ld != null)
+                    GameManager.Instance?.TriggerLevelComplete(score, ld.nextSceneName);
             }
             else
             {
