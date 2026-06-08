@@ -8,7 +8,10 @@
       "Bash(npx unity-mcp-cli *)",
       "Bash(powershell *)",
       "Read(//c/Users/DELL/AppData/Local/Unity/Editor/**)",
-      "Bash(grep -v \"^Binary\\\\|^\\\\s*$\")"
+      "Bash(grep -v \"^Binary\\\\|^\\\\s*$\")",
+      "mcp__ai-game-developer__script-execute",
+      "mcp__ai-game-developer__console-get-logs",
+      "mcp__ai-game-developer__assets-refresh"
     ]
   },
   "enableAllProjectMcpServers": true,

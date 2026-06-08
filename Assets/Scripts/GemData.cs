@@ -8,6 +8,9 @@ public class GemData : MonoBehaviour
     [Header("SFX")]
     public AudioClip pickupSound;
 
+    [Header("VFX")]
+    public ParticleSystem collectFX;
+
     [Header("Visual")]
     public float spinSpeed = 80f;
     public float bobSpeed = 1.5f;

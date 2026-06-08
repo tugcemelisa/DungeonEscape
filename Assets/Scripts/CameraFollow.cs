@@ -27,9 +27,14 @@ public class CameraFollow : MonoBehaviour
     {
         if (player == null) return;
 
-        currentX += Input.GetAxis("Mouse X") * rotationSpeed;
-        currentY -= Input.GetAxis("Mouse Y") * rotationSpeed;
-        currentY = Mathf.Clamp(currentY, -20f, 60f);
+        bool gameActive = GameManager.Instance == null ||
+                          GameManager.Instance.State == GameManager.GameState.Playing;
+        if (gameActive)
+        {
+            currentX += Input.GetAxis("Mouse X") * rotationSpeed;
+            currentY -= Input.GetAxis("Mouse Y") * rotationSpeed;
+            currentY = Mathf.Clamp(currentY, -20f, 60f);
+        }
 
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
         Vector3 targetPosition = (rotation * new Vector3(0f, 0f, -distance))

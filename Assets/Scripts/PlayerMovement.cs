@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -18,6 +20,15 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip keyPickupSound;
     public AudioClip doorOpenSound;
 
+    [Header("VFX")]
+    public ParticleSystem gemPickupFX;
+    public ParticleSystem doorOpenFX;
+    public ParticleSystem deathFX;
+    public ParticleSystem damageFX;
+
+    [Header("Damage Flash")]
+    public Image damageFlash;
+
     [Header("Player Stats")]
     public int score = 0;
     public int health = 100;
@@ -25,10 +36,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 2.5f;
-
     public float jumpForce = 6.0f;
+
     private Rigidbody rb;
     private Animator anim;
+    private bool _isDead;
 
     [Header("Ground Check")]
     public Transform groundCheck;
@@ -36,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     private bool isGrounded;
 
-    // Physics input cache — written in Update, consumed in FixedUpdate
     private Vector3 _moveDir = Vector3.zero;
     private bool _isSprinting = false;
     private bool _jumpQueued = false;
@@ -51,22 +62,22 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (_isDead) return;
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         ReadInput();
 
-        // Update'te SetFloat -> her frame blend guncellenir -> smooth animasyon
         if (anim != null)
         {
             float currentSpeed = _isSprinting ? speed * 2f : speed;
             anim.SetFloat("MoveSpeed", _moveDir.magnitude * currentSpeed, 0.08f, Time.deltaTime);
         }
 
-        if (health <= 0) RestartGame();
+        if (health <= 0) Die();
     }
 
     void ReadInput()
     {
-        // GetAxisRaw: tuş bırakılınca anında 0 — smooth decay yok, idle kayma yok
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
 
@@ -86,11 +97,12 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (_isDead) return;
+
         float currentSpeed = _isSprinting ? speed * 2f : speed;
 
         if (_moveDir != Vector3.zero)
         {
-            // linearVelocity → Rigidbody interpolation ile cok daha smooth calisir
             Vector3 targetVel = _moveDir * currentSpeed;
             rb.linearVelocity = new Vector3(targetVel.x, rb.linearVelocity.y, targetVel.z);
             Quaternion targetRot = Quaternion.LookRotation(_moveDir);
@@ -114,13 +126,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (_isDead) return;
+
         if (other.CompareTag("Key") && !hasKey)
         {
             hasKey = true;
             heldKey = other.gameObject;
             heldKey.transform.SetParent(playerHand);
-            heldKey.transform.localPosition = new Vector3(0f, 0f, 0f);
-            heldKey.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            heldKey.transform.localPosition = Vector3.zero;
+            heldKey.transform.localRotation = Quaternion.identity;
             heldKey.GetComponent<Collider>().enabled = false;
             if (keyPickupSound != null)
                 AudioSource.PlayClipAtPoint(keyPickupSound, other.transform.position);
@@ -140,9 +154,12 @@ public class PlayerMovement : MonoBehaviour
             score += points;
             UpdateUI();
 
-            // SFX — plays at world position even after object is destroyed
             if (gem != null && gem.pickupSound != null)
                 AudioSource.PlayClipAtPoint(gem.pickupSound, other.transform.position);
+
+            // Spawn gem particle before destroying the gem
+            if (gem != null) SpawnFX(gem.collectFX, other.transform.position);
+            else             SpawnFX(gemPickupFX,    other.transform.position);
 
             Destroy(other.gameObject);
         }
@@ -150,6 +167,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (_isDead) return;
+
         if (collision.gameObject.CompareTag("IronDoor"))
         {
             if (hasKey)
@@ -160,11 +179,15 @@ public class PlayerMovement : MonoBehaviour
                 collision.collider.isTrigger = true;
 
                 heldKey.transform.SetParent(doorTrans);
-                heldKey.transform.localPosition = new Vector3(-27.7900009f, -2.71000004f,  1.71000004f);
+                heldKey.transform.localPosition = new Vector3(-27.7900009f, -2.71000004f, 1.71000004f);
                 heldKey.transform.localRotation = Quaternion.Euler(0f, 0f, 90.9999924f);
-                heldKey.transform.localScale    = new Vector3(1.14138663f,  1.12065291f,  1.95453012f);
+                heldKey.transform.localScale    = new Vector3(1.14138663f, 1.12065291f, 1.95453012f);
+
                 if (doorOpenSound != null)
                     AudioSource.PlayClipAtPoint(doorOpenSound, doorTrans.position);
+
+                SpawnFX(doorOpenFX, doorTrans.position);
+
                 heldKey = null;
                 hasKey = false;
             }
@@ -181,6 +204,23 @@ public class PlayerMovement : MonoBehaviour
     {
         health -= amount;
         UpdateUI();
+        SpawnFX(damageFX, transform.position);
+        if (damageFlash != null) StartCoroutine(FlashRed());
+    }
+
+    IEnumerator FlashRed()
+    {
+        damageFlash.color = new Color(1f, 0f, 0f, 0.45f);
+        float duration = 0.35f;
+        float elapsed  = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(0.45f, 0f, elapsed / duration);
+            damageFlash.color = new Color(1f, 0f, 0f, alpha);
+            yield return null;
+        }
+        damageFlash.color = new Color(1f, 0f, 0f, 0f);
     }
 
     public void Heal(int amount)
@@ -190,25 +230,43 @@ public class PlayerMovement : MonoBehaviour
         ShowInfo($"+{amount} HP restored!");
     }
 
+    void Die()
+    {
+        _isDead = true;
+        SpawnFX(deathFX, transform.position);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.TriggerLose(score);
+        else
+            Invoke(nameof(FallbackRestart), 1.5f);
+    }
+
+    void FallbackRestart() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+
+    // --- VFX HELPER ---
+
+    void SpawnFX(ParticleSystem prefab, Vector3 pos)
+    {
+        if (prefab == null) return;
+        var fx = Instantiate(prefab, pos, Quaternion.identity);
+        Destroy(fx.gameObject, fx.main.duration + fx.main.startLifetime.constantMax + 1f);
+    }
+
     // --- UI HELPERS ---
 
     void ShowInfo(string message)
     {
-        if (infoText != null)
-        {
-            infoText.text = message;
-            CancelInvoke("ClearText");
-            Invoke("ClearText", 3.0f);
-        }
+        if (infoText == null) return;
+        infoText.text = message;
+        CancelInvoke(nameof(ClearText));
+        Invoke(nameof(ClearText), 3.0f);
     }
 
     void ClearText() { if (infoText != null) infoText.text = ""; }
 
     void UpdateUI()
     {
-        gemText.text    = "Gems: " + score;
-        healthText.text = "HP: "   + health;
+        if (gemText)    gemText.text    = "Gems: " + score;
+        if (healthText) healthText.text = "HP: "   + health;
     }
-
-    void RestartGame() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
 }
