@@ -11,7 +11,8 @@
       "Bash(grep -v \"^Binary\\\\|^\\\\s*$\")",
       "mcp__ai-game-developer__script-execute",
       "mcp__ai-game-developer__console-get-logs",
-      "mcp__ai-game-developer__assets-refresh"
+      "mcp__ai-game-developer__assets-refresh",
+      "Bash(python *)"
     ]
   },
   "enableAllProjectMcpServers": true,

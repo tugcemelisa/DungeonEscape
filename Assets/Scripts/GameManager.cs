@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public enum GameState { Playing, Won, Dead }
     public GameState State { get; private set; } = GameState.Playing;
 
+    [Header("HUD")]
+    public GameObject hudPanel;
+
     [Header("Win Panel")]
     public GameObject winPanel;
     public TextMeshProUGUI winScoreText;
@@ -38,6 +41,8 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
 
+        if (hudPanel) hudPanel.SetActive(false);
+
         float t = Time.time - _startTime;
         if (winScoreText) winScoreText.text  = "Score: " + score;
         if (winTimeText)  winTimeText.text   = $"Time: {(int)t / 60:00}:{(int)t % 60:00}";
@@ -52,6 +57,8 @@ public class GameManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
+
+        if (hudPanel) hudPanel.SetActive(false);
 
         if (loseScoreText) loseScoreText.text = "Score: " + score;
         if (losePanel)     losePanel.SetActive(true);
